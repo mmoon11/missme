@@ -1,10 +1,33 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { CheckBox, Icon } from "@rneui/themed";
+import { CheckBox, Icon, Button, Input } from "@rneui/themed";
 import { useState } from "react";
+import Drawer from "react-native-drawer";
+import { Typography } from "@mui/material";
+import { style } from "@mui/system";
 
 const HomeScreen = ({ navigation }) => {
   const [checked, setChecked] = useState(false);
   const handleCheck = () => setChecked(!checked);
+  const [open, setOpen] = useState(false);
+  const [tripName, setTripName] = useState("");
+
+  const handleAddClick = () => {
+    setOpen(!open);
+    console.log(open);
+  };
+
+  const DrawerContent = () => {
+    return (
+      <View style={styles.drawerContent}>
+        <Text>Create new trip</Text>
+        <Input
+          placeholder="Trip name"
+          onChangeText={setTripName()}
+          value={tripName}
+        />
+      </View>
+    );
+  };
 
   return (
     <>
@@ -43,6 +66,29 @@ const HomeScreen = ({ navigation }) => {
               />
             </View>
           </TouchableOpacity>
+
+          <Drawer
+            side="bottom"
+            type="overlay"
+            tapToClose
+            open={true}
+            // style={styles.drawerStyles}
+            content={<DrawerContent />}
+            openDrawerOffset={0.1}
+          ></Drawer>
+
+          {!open && (
+            <Button
+              type="solid"
+              color="#26a69a"
+              radius="xs"
+              buttonStyle={styles.addButton}
+              containerStyle={styles.buttonContainer}
+              onPress={handleAddClick}
+            >
+              <Icon name="plus" type="feather" color="white" />
+            </Button>
+          )}
         </View>
       </View>
     </>
@@ -116,6 +162,24 @@ const styles = StyleSheet.create({
     fontWeight: "normal",
     color: "#000",
     fontSize: 16,
+  },
+  addButton: {
+    borderRadius: 50,
+    width: 65,
+    height: 65,
+  },
+  buttonContainer: {
+    position: "absolute",
+    bottom: 190,
+    right: 35,
+  },
+  drawerStyles: {
+    main: { border: "solid" },
+  },
+  drawerContent: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
