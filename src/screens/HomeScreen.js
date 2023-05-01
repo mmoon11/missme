@@ -8,12 +8,11 @@ import { style } from "@mui/system";
 const HomeScreen = ({ navigation }) => {
   const [checked, setChecked] = useState(false);
   const handleCheck = () => setChecked(!checked);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [tripName, setTripName] = useState("");
 
   const handleAddClick = () => {
     setOpen(!open);
-    console.log(open);
   };
 
   const DrawerContent = () => {
@@ -32,52 +31,49 @@ const HomeScreen = ({ navigation }) => {
   return (
     <>
       <View style={styles.container}>
-        <View style={styles.headingContainer}>
-          <Text style={styles.heading}>Home</Text>
-          <View style={styles.profileContainer}>
-            {/* replace with initials */}
-            <Text style={styles.initials}>MM</Text>
-          </View>
-        </View>
-        <View style={styles.whiteContainer}>
-          <Text style={styles.subheading}>Trips</Text>
-          {/* generate trips from database */}
-          {/* dummy data */}
-          <TouchableOpacity style={styles.tripContainer} activeOpacity={0.5}>
-            <Text style={styles.tripTitle}>Miss me summer trip 2023</Text>
-            <View style={styles.tripContainerBottom}>
-              <View style={styles.profileContainer}>
-                {/* replace with initials */}
-                <Text style={styles.initials}>MM</Text>
-              </View>
-              <CheckBox
-                right
-                title={"Going?"}
-                iconRight
-                containerStyle={styles.checkboxContainer}
-                textStyle={styles.checkboxText}
-                onPress={handleCheck}
-                checked={checked}
-                size={24}
-                checkedIcon={
-                  <Icon name="check-circle" type="feather" color="green" />
-                }
-                uncheckedIcon={<Icon name="circle" type="feather" />}
-              />
+        <Drawer
+          side="bottom"
+          type="overlay"
+          tapToClose
+          open={open}
+          content={<DrawerContent />}
+          openDrawerOffset={0.3}
+        >
+          <View style={styles.headingContainer}>
+            <Text style={styles.heading}>Home</Text>
+            <View style={styles.profileContainer}>
+              {/* replace with initials */}
+              <Text style={styles.initials}>MM</Text>
             </View>
-          </TouchableOpacity>
+          </View>
+          <View style={styles.whiteContainer}>
+            <Text style={styles.subheading}>Trips</Text>
+            {/* generate trips from database */}
+            {/* dummy data */}
+            <TouchableOpacity style={styles.tripContainer} activeOpacity={0.5}>
+              <Text style={styles.tripTitle}>Miss me summer trip 2023</Text>
+              <View style={styles.tripContainerBottom}>
+                <View style={styles.profileContainer}>
+                  {/* replace with initials */}
+                  <Text style={styles.initials}>MM</Text>
+                </View>
+                <CheckBox
+                  right
+                  title={"Going?"}
+                  iconRight
+                  containerStyle={styles.checkboxContainer}
+                  textStyle={styles.checkboxText}
+                  onPress={handleCheck}
+                  checked={checked}
+                  size={24}
+                  checkedIcon={
+                    <Icon name="check-circle" type="feather" color="green" />
+                  }
+                  uncheckedIcon={<Icon name="circle" type="feather" />}
+                />
+              </View>
+            </TouchableOpacity>
 
-          <Drawer
-            side="bottom"
-            type="overlay"
-            tapToClose
-            open={true}
-            // style={styles.drawerStyles}
-            content={<DrawerContent />}
-            openDrawerOffset={0.1}
-          ></Drawer>
-
-          {!open && (
             <Button
               type="solid"
               color="#26a69a"
@@ -88,8 +84,8 @@ const HomeScreen = ({ navigation }) => {
             >
               <Icon name="plus" type="feather" color="white" />
             </Button>
-          )}
-        </View>
+          </View>
+        </Drawer>
       </View>
     </>
   );
@@ -180,6 +176,14 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "white",
+    padding: 30,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    shadowColor: "#171717",
+    shadowOffset: { height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
 });
 
