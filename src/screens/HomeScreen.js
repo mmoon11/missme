@@ -22,8 +22,7 @@ const HomeScreen = ({ navigation }) => {
   const DrawerContent = () => {
     const [tripName, setTripName] = useState("");
     const [location, setLocation] = useState("");
-    // const [dates, setDates] = useState(new Date());
-    const [range, setRange] = useState([]);
+    const [range, setRange] = useState(["-", "-"]);
     const [calOpen, setCalOpen] = useState(false);
 
     const onDismiss = useCallback(() => {
@@ -33,8 +32,8 @@ const HomeScreen = ({ navigation }) => {
     const onConfirm = useCallback(
       ({ startDate, endDate }) => {
         setCalOpen(false);
-        endDate.setDate(endDate.getDate() - 1);
         if (startDate && endDate) {
+          endDate.setDate(endDate.getDate() - 1);
           setRange([
             startDate.toISOString().split("T")[0],
             endDate.toISOString().split("T")[0],
@@ -86,6 +85,7 @@ const HomeScreen = ({ navigation }) => {
             color="#26a69a"
             radius="xs"
             buttonStyle={styles.datesButton}
+            containerStyle={styles.datesButtonContainer}
             onPress={openDates}
           >
             <Icon name="calendar" type="feather" color="white" />
@@ -229,6 +229,10 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     padding: 20,
     marginTop: 20,
+    shadowColor: "#171717",
+    shadowOffset: { height: 5 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
   },
   tripTitle: {
     fontWeight: "bold",
@@ -259,6 +263,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 190,
     right: 35,
+    shadowColor: "#171717",
+    shadowOffset: { height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
   drawerStyles: {
     main: { border: "solid" },
@@ -336,6 +344,12 @@ const styles = StyleSheet.create({
     padding: 8,
     minWidth: 125,
     textAlign: "center",
+  },
+  datesButtonContainer: {
+    shadowColor: "#171717",
+    shadowOffset: { height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
 });
 
