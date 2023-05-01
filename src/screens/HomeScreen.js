@@ -1,9 +1,10 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { CheckBox, Icon, Button, Input } from "@rneui/themed";
+import { CheckBox, Icon, Button } from "@rneui/themed";
 import { TextInput } from "react-native";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Drawer from "react-native-drawer";
 // import { Calendar } from "react-native-calendars";
+import { DatePickerModal } from "react-native-paper-dates";
 
 const HomeScreen = ({ navigation }) => {
   const [checked, setChecked] = useState(false);
@@ -22,6 +23,30 @@ const HomeScreen = ({ navigation }) => {
     const [tripName, setTripName] = useState("");
     const [location, setLocation] = useState("");
     // const [dates, setDates] = useState(new Date());
+    const [range, setRange] = useState([]);
+    const [calOpen, setCalOpen] = useState(false);
+
+    const onDismiss = useCallback(() => {
+      setCalOpen(false);
+    }, [setCalOpen]);
+
+    const onConfirm = useCallback(
+      ({ startDate, endDate }) => {
+        setCalOpen(false);
+        endDate.setDate(endDate.getDate() - 1);
+        if (startDate && endDate) {
+          setRange([
+            startDate.toISOString().split("T")[0],
+            endDate.toISOString().split("T")[0],
+          ]);
+        }
+      },
+      [setCalOpen, setRange]
+    );
+
+    const openDates = () => {
+      setCalOpen(true);
+    };
 
     return (
       <View style={styles.drawerContent}>
@@ -45,13 +70,38 @@ const HomeScreen = ({ navigation }) => {
           }}
         /> */}
 
+        <DatePickerModal
+          locale="en"
+          mode="range"
+          visible={calOpen}
+          onDismiss={onDismiss}
+          startDate={range.startDate}
+          endDate={range.endDate}
+          onConfirm={onConfirm}
+        />
+
+        <View style={styles.dates}>
+          <Button
+            type="solid"
+            color="#26a69a"
+            radius="xs"
+            buttonStyle={styles.datesButton}
+            onPress={openDates}
+          >
+            <Icon name="calendar" type="feather" color="white" />
+          </Button>
+
+          <Text style={styles.dateText}>{range[0]}</Text>
+          <Text style={styles.dateText}>{range[1]}</Text>
+        </View>
+
         <View style={styles.buttonsContainer}>
           <Button
             type="solid"
             color="#26a69a"
             radius="xs"
             buttonStyle={styles.cancelButton}
-            onPress={handleAddClick}
+            onPress={handleTapClose}
           >
             <Text>Cancel</Text>
           </Button>
@@ -78,7 +128,7 @@ const HomeScreen = ({ navigation }) => {
           tapToClose
           open={open}
           content={<DrawerContent />}
-          openDrawerOffset={0.1}
+          openDrawerOffset={0.05}
           onCloseStart={handleTapClose}
         >
           <View style={styles.headingContainer}>
@@ -263,6 +313,29 @@ const styles = StyleSheet.create({
   },
   whiteText: {
     color: "#fff",
+  },
+  datesButton: {
+    backgroundColor: "#26a69a",
+    borderRadius: 50,
+    height: 50,
+    width: 50,
+  },
+  dates: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    marginTop: 20,
+  },
+  dateText: {
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: "lightgray",
+    borderRadius: 10,
+    padding: 8,
+    minWidth: 125,
+    textAlign: "center",
   },
 });
 
