@@ -1,29 +1,70 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { CheckBox, Icon, Button, Input } from "@rneui/themed";
+import { TextInput } from "react-native";
 import { useState } from "react";
 import Drawer from "react-native-drawer";
-import { Typography } from "@mui/material";
-import { style } from "@mui/system";
+// import { Calendar } from "react-native-calendars";
 
 const HomeScreen = ({ navigation }) => {
   const [checked, setChecked] = useState(false);
   const handleCheck = () => setChecked(!checked);
   const [open, setOpen] = useState(true);
-  const [tripName, setTripName] = useState("");
 
   const handleAddClick = () => {
-    setOpen(!open);
+    setOpen(true);
+  };
+
+  const handleTapClose = () => {
+    setOpen(false);
   };
 
   const DrawerContent = () => {
+    const [tripName, setTripName] = useState("");
+    const [location, setLocation] = useState("");
+    // const [dates, setDates] = useState(new Date());
+
     return (
       <View style={styles.drawerContent}>
         <Text>Create new trip</Text>
-        <Input
+        <TextInput
           placeholder="Trip name"
-          onChangeText={setTripName()}
-          value={tripName}
+          defaultValue={tripName}
+          onChangeText={(title) => setTripName(title)}
+          style={styles.textInput}
         />
+        <TextInput
+          placeholder="Location"
+          defaultValue={location}
+          onChangeText={(location) => setLocation(location)}
+          style={[styles.textInput, { marginTop: 40 }]}
+        />
+        {/* <Calendar
+          style={styles.calendar}
+          onDayPress={(day) => {
+            console.log("selected day", day);
+          }}
+        /> */}
+
+        <View style={styles.buttonsContainer}>
+          <Button
+            type="solid"
+            color="#26a69a"
+            radius="xs"
+            buttonStyle={styles.cancelButton}
+            onPress={handleAddClick}
+          >
+            <Text>Cancel</Text>
+          </Button>
+          <Button
+            type="solid"
+            color="#26a69a"
+            radius="xs"
+            buttonStyle={styles.addTripButton}
+            onPress={handleAddClick}
+          >
+            <Text style={styles.whiteText}>Add Trip</Text>
+          </Button>
+        </View>
       </View>
     );
   };
@@ -37,7 +78,8 @@ const HomeScreen = ({ navigation }) => {
           tapToClose
           open={open}
           content={<DrawerContent />}
-          openDrawerOffset={0.3}
+          openDrawerOffset={0.1}
+          onCloseStart={handleTapClose}
         >
           <View style={styles.headingContainer}>
             <Text style={styles.heading}>Home</Text>
@@ -77,7 +119,6 @@ const HomeScreen = ({ navigation }) => {
             <Button
               type="solid"
               color="#26a69a"
-              radius="xs"
               buttonStyle={styles.addButton}
               containerStyle={styles.buttonContainer}
               onPress={handleAddClick}
@@ -174,16 +215,54 @@ const styles = StyleSheet.create({
   },
   drawerContent: {
     display: "flex",
-    justifyContent: "center",
     alignItems: "center",
     backgroundColor: "white",
     padding: 30,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     shadowColor: "#171717",
-    shadowOffset: { height: 4 },
+    shadowOffset: { height: -4 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
+    height: "100%",
+  },
+  textInput: {
+    fontSize: 16,
+    width: "100%",
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: "lightgray",
+    marginTop: 20,
+    padding: 15,
+  },
+  calendar: {
+    marginTop: 20,
+    width: 350,
+  },
+  cancelButton: {
+    backgroundColor: "lightgray",
+    borderRadius: 50,
+    height: 50,
+    paddingLeft: 20,
+    paddingRight: 20,
+  },
+  addTripButton: {
+    backgroundColor: "#26a69a",
+    borderRadius: 50,
+    height: 50,
+    paddingLeft: 90,
+    paddingRight: 90,
+  },
+  buttonsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 20,
+    marginTop: 60,
+    position: "absolute",
+    bottom: 60,
+  },
+  whiteText: {
+    color: "#fff",
   },
 });
 
