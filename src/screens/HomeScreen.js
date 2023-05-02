@@ -3,14 +3,15 @@ import { CheckBox, Icon, Button } from "@rneui/themed";
 import { TextInput } from "react-native";
 import { useState, useCallback } from "react";
 import Drawer from "react-native-drawer";
-// import { Calendar } from "react-native-calendars";
 import { DatePickerModal } from "react-native-paper-dates";
 
 const HomeScreen = ({ navigation }) => {
+  // useState
   const [checked, setChecked] = useState(false);
   const handleCheck = () => setChecked(!checked);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
+  // handle clicks
   const handleAddClick = () => {
     setOpen(true);
   };
@@ -19,12 +20,15 @@ const HomeScreen = ({ navigation }) => {
     setOpen(false);
   };
 
+  // drawer content
   const DrawerContent = () => {
+    // useState
     const [tripName, setTripName] = useState("");
     const [location, setLocation] = useState("");
     const [range, setRange] = useState(["-", "-"]);
     const [calOpen, setCalOpen] = useState(false);
 
+    // handle clicks
     const onDismiss = useCallback(() => {
       setCalOpen(false);
     }, [setCalOpen]);
@@ -62,12 +66,6 @@ const HomeScreen = ({ navigation }) => {
           onChangeText={(location) => setLocation(location)}
           style={[styles.textInput, { marginTop: 40 }]}
         />
-        {/* <Calendar
-          style={styles.calendar}
-          onDayPress={(day) => {
-            console.log("selected day", day);
-          }}
-        /> */}
 
         <DatePickerModal
           locale="en"
