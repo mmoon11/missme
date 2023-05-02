@@ -3,9 +3,9 @@ import { CheckBox, Icon } from "@rneui/themed";
 import { useEffect, useState } from "react";
 
 const TripButton = ({ trip, navigation }) => {
-  const handleCheck = () => setChecked(!checked);
-
   const [checked, setChecked] = useState(false);
+
+  const handleCheck = () => setChecked(!checked);
 
   const getDate = (date) => {
     dateObject = date.toDate();
