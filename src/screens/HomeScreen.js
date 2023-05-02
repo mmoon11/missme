@@ -12,11 +12,10 @@ import {
   addDoc,
 } from "firebase/firestore";
 import { db } from "../../util/firebase";
+import TripButton from "../components/tripButton";
 
 const HomeScreen = ({ navigation }) => {
   // useState
-  const [checked, setChecked] = useState(false);
-  const handleCheck = () => setChecked(!checked);
   const [open, setOpen] = useState(false);
   const [trips, setTrips] = useState([]);
 
@@ -197,54 +196,7 @@ const HomeScreen = ({ navigation }) => {
 
             {/* trips from database */}
             {trips.map((trip) => (
-              <TouchableOpacity
-                style={styles.tripContainer}
-                activeOpacity={0.5}
-                onPress={() =>
-                  navigation.navigate("Trip", {
-                    tripName: trip.title,
-                    location: trip.location,
-                    range: trip.dates,
-                    attending: trip.attending,
-                  })
-                }
-                key={trip.id}
-              >
-                <Text style={styles.tripTitle}>{trip.title}</Text>
-                <View style={styles.tripContainerBottom}>
-                  <View style={styles.attendingIcons}>
-                    {trip.attending.length > 0 && (
-                      <View style={[styles.profileContainer, { zIndex: 1 }]}>
-                        <Text style={styles.initials}>
-                          {trip.attending[0].initials}
-                        </Text>
-                      </View>
-                    )}
-                    {trip.attending.slice(1).map((person) => (
-                      <View
-                        style={[styles.profileContainer, { marginLeft: -20 }]}
-                        key={person}
-                      >
-                        <Text style={styles.initials}>{person.initials}</Text>
-                      </View>
-                    ))}
-                  </View>
-                  <CheckBox
-                    right
-                    title={"Going?"}
-                    iconRight
-                    containerStyle={styles.checkboxContainer}
-                    textStyle={styles.checkboxText}
-                    onPress={handleCheck}
-                    checked={checked}
-                    size={24}
-                    checkedIcon={
-                      <Icon name="check-circle" type="feather" color="green" />
-                    }
-                    uncheckedIcon={<Icon name="circle" type="feather" />}
-                  />
-                </View>
-              </TouchableOpacity>
+              <TripButton trip={trip} navigation={navigation} />
             ))}
 
             <Button
@@ -305,36 +257,6 @@ const styles = StyleSheet.create({
     color: "#979C9E",
     fontWeight: "bold",
     fontSize: 24,
-  },
-  tripContainer: {
-    backgroundColor: "#F2F4F5",
-    borderRadius: 7,
-    padding: 20,
-    marginTop: 20,
-    shadowColor: "#171717",
-    shadowOffset: { height: 5 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-  },
-  tripTitle: {
-    fontWeight: "bold",
-    fontSize: 24,
-  },
-  tripContainerBottom: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 20,
-  },
-  checkboxContainer: {
-    backgroundColor: "#F2F4F5",
-    padding: 0,
-  },
-  checkboxText: {
-    fontWeight: "normal",
-    color: "#000",
-    fontSize: 16,
   },
   addButton: {
     borderRadius: 50,
@@ -432,10 +354,6 @@ const styles = StyleSheet.create({
     shadowOffset: { height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
-  },
-  attendingIcons: {
-    display: "flex",
-    flexDirection: "row",
   },
 });
 
