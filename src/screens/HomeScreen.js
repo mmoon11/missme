@@ -7,7 +7,7 @@ import { db } from "../../util/firebase";
 import TripButton from "../components/TripButton";
 import DrawerContent from "../components/DrawerContent";
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({ navigation, route }) => {
   // useState
   const [open, setOpen] = useState(false);
   const [trips, setTrips] = useState([]);

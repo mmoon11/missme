@@ -17,10 +17,6 @@ const TripButton = ({ trip, navigation }) => {
     return dateObject.toLocaleDateString(undefined, options);
   };
 
-  useEffect(() => {
-    console.log(checked);
-  }, [checked]);
-
   return (
     <TouchableOpacity
       style={styles.tripContainer}
