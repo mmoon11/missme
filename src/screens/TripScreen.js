@@ -3,7 +3,7 @@ import { Chip, CheckBox, Icon } from "@rneui/themed";
 import { Calendar } from "react-native-calendars";
 import { useState, useEffect } from "react";
 
-const TripScreen = ({ route, navigation: { setParam } }) => {
+const TripScreen = ({ route, navigation }) => {
   const { tripName, location, range, attending, checked } = route.params;
   const [markedDates, setMarkedDates] = useState({});
 
@@ -40,8 +40,6 @@ const TripScreen = ({ route, navigation: { setParam } }) => {
 
       betweenDays.push(start);
     }
-
-    console.log(betweenDays);
 
     return betweenDays;
   };
@@ -144,7 +142,7 @@ const TripScreen = ({ route, navigation: { setParam } }) => {
         iconRight
         containerStyle={styles.checkboxContainer}
         textStyle={styles.checkboxText}
-        // onPress={handleCheck}
+        onPress={() => navigation.setParams({ checked: !checked })}
         checked={checked}
         size={24}
         checkedIcon={<Icon name="check-circle" type="feather" color="green" />}

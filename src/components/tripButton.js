@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { CheckBox, Icon } from "@rneui/themed";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const TripButton = ({ trip, navigation }) => {
   const handleCheck = () => setChecked(!checked);
@@ -16,6 +16,10 @@ const TripButton = ({ trip, navigation }) => {
     };
     return dateObject.toLocaleDateString(undefined, options);
   };
+
+  useEffect(() => {
+    console.log(checked);
+  }, [checked]);
 
   return (
     <TouchableOpacity
