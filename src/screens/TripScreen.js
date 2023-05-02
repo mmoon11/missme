@@ -26,13 +26,41 @@ const TripScreen = ({ route, navigation: { setParam } }) => {
     return year + "-" + month + "-" + day;
   };
 
+  const getBetweenDays = (start, end) => {
+    const betweenDays = [];
+    start = start.toDate();
+    end = end.toDate();
+    end.setDate(end.getDate() - 1);
+
+    while (
+      start.getTime() < end.getTime() &&
+      start.getDate() !== end.getDate()
+    ) {
+      start.setDate(start.getDate() + 1);
+
+      betweenDays.push(start);
+    }
+
+    console.log(betweenDays);
+
+    return betweenDays;
+  };
+
   useEffect(() => {
-    if (range[0].length > 1) {
+    if (range[0]) {
       const temp = {};
       const startDate = getCalendarDate(range[0]);
       const endDate = getCalendarDate(range[1]);
+
+      const betweenDays = getBetweenDays(range[0], range[1]);
+
       const startStyle = {
         startingDay: true,
+        color: "#26a69a",
+        textColor: "white",
+      };
+      const middleStyle = {
+        selected: true,
         color: "#26a69a",
         textColor: "white",
       };
@@ -43,6 +71,12 @@ const TripScreen = ({ route, navigation: { setParam } }) => {
       };
 
       temp[startDate] = startStyle;
+
+      betweenDays.map((day) => {
+        day = day.toISOString().split("T")[0];
+        temp[day] = middleStyle;
+      });
+
       temp[endDate] = endStyle;
 
       setMarkedDates(temp);
