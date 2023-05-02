@@ -199,6 +199,14 @@ const HomeScreen = ({ navigation }) => {
               <TouchableOpacity
                 style={styles.tripContainer}
                 activeOpacity={0.5}
+                onPress={() =>
+                  navigation.navigate("Trip", {
+                    tripName: trip.title,
+                    location: trip.location,
+                    range: trip.dates,
+                    attending: trip.attending,
+                  })
+                }
               >
                 <Text style={styles.tripTitle}>{trip.title}</Text>
                 <View style={styles.tripContainerBottom}>
