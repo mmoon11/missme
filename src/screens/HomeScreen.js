@@ -1,10 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { Icon, Button } from "@rneui/themed";
 import { useState, useEffect } from "react";
 import Drawer from "react-native-drawer";
@@ -132,12 +126,6 @@ const styles = StyleSheet.create({
     marginTop: "8%",
     borderRadius: 20,
     padding: 35,
-    shadowOffset: {
-      height: -3,
-    },
-    shadowColor: "black",
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
   },
   subheading: {
     color: "#979C9E",

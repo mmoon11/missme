@@ -8,7 +8,6 @@ const TripButton = ({ trip, navigation }) => {
   const [checked, setChecked] = useState(false);
 
   const getDate = (date) => {
-    console.log(date);
     dateObject = date.toDate();
     month = (dateObject.getMonth() + 1).toString();
     day = dateObject.getDate().toString();
@@ -32,7 +31,14 @@ const TripButton = ({ trip, navigation }) => {
     >
       <View style={styles.buttonTop}>
         <Text style={styles.tripTitle}>{trip.title}</Text>
-        {trip.dates[0].length > 1 && <Text>{getDate(trip.dates[0])}</Text>}
+        {trip.dates[0] !== "-" && (
+          <View style={styles.datesContainer}>
+            <Text style={styles.dateText}>{getDate(trip.dates[0])}</Text>
+            {trip.dates[1] !== "-" && (
+              <Text style={styles.dateText}>- {getDate(trip.dates[1])}</Text>
+            )}
+          </View>
+        )}
       </View>
       <Text style={styles.locationText}>{trip.location}</Text>
 
@@ -87,6 +93,7 @@ const styles = StyleSheet.create({
   tripTitle: {
     fontWeight: "bold",
     fontSize: 24,
+    flex: 2,
   },
   tripContainerBottom: {
     display: "flex",
@@ -136,6 +143,15 @@ const styles = StyleSheet.create({
   buttonTop: {
     display: "flex",
     flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  datesContainer: {
+    display: "flex",
+    flex: 1,
+  },
+  dateText: {
+    color: "gray",
+    textAlign: "right",
   },
 });
 

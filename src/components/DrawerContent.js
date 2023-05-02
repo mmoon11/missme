@@ -27,20 +27,22 @@ const DrawerContent = ({ handleTapClose, setOpen }) => {
     setCalOpen(false);
   }, [setCalOpen]);
 
-  const onConfirm = useCallback(
-    ({ startDate, endDate }) => {
-      setCalOpen(false);
-      console.log(startDate);
-      if (startDate && endDate) {
-        endDate.setDate(endDate.getDate() - 1);
-        setRange([startDate, endDate]);
-      }
-    },
-    [setCalOpen, setRange]
-  );
+  const onConfirm = ({ startDate, endDate }) => {
+    setCalOpen(false);
+    if (startDate && endDate) {
+      setRange([startDate, endDate]);
+    }
+  };
 
   const openDates = () => {
     setCalOpen(true);
+  };
+
+  const onCancel = () => {
+    handleTapClose();
+    setTripName("");
+    setLocation("");
+    setRange(["-", "-"]);
   };
 
   // add trip
@@ -99,10 +101,10 @@ const DrawerContent = ({ handleTapClose, setOpen }) => {
         </Button>
 
         <Text style={styles.dateText}>
-          {range[0] === "-" ? "-" : range[0].toISOString().split("T")[0]}
+          {range[0] === "-" ? "-" : range[0].toDateString()}
         </Text>
         <Text style={styles.dateText}>
-          {range[1] === "-" ? "-" : range[1].toISOString().split("T")[0]}
+          {range[1] === "-" ? "-" : range[1].toDateString()}
         </Text>
       </View>
 
@@ -112,7 +114,7 @@ const DrawerContent = ({ handleTapClose, setOpen }) => {
           color="#26a69a"
           radius="xs"
           buttonStyle={styles.cancelButton}
-          onPress={handleTapClose}
+          onPress={onCancel}
         >
           <Text>Cancel</Text>
         </Button>
@@ -168,12 +170,12 @@ const styles = StyleSheet.create({
     width: 50,
   },
   dateText: {
-    fontSize: 16,
+    fontSize: 13,
     borderWidth: 1,
     borderColor: "lightgray",
     borderRadius: 10,
     padding: 8,
-    minWidth: 125,
+    minWidth: 130,
     textAlign: "center",
   },
   buttonsContainer: {
