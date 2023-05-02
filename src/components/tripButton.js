@@ -19,7 +19,6 @@ const TripButton = ({ trip, navigation }) => {
           attending: trip.attending,
         })
       }
-      key={trip.id}
     >
       <Text style={styles.tripTitle}>{trip.title}</Text>
       <Text style={styles.locationText}>{trip.location}</Text>
