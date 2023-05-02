@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { TextInput } from "react-native";
 import { DatePickerModal } from "react-native-paper-dates";
 import { Icon, Button } from "@rneui/themed";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { db } from "../../util/firebase";
 
 const DrawerContent = ({ handleTapClose, setOpen }) => {
@@ -30,12 +30,10 @@ const DrawerContent = ({ handleTapClose, setOpen }) => {
   const onConfirm = useCallback(
     ({ startDate, endDate }) => {
       setCalOpen(false);
+      console.log(startDate);
       if (startDate && endDate) {
         endDate.setDate(endDate.getDate() - 1);
-        setRange([
-          startDate.toISOString().split("T")[0],
-          endDate.toISOString().split("T")[0],
-        ]);
+        setRange([startDate, endDate]);
       }
     },
     [setCalOpen, setRange]
@@ -100,8 +98,12 @@ const DrawerContent = ({ handleTapClose, setOpen }) => {
           <Icon name="calendar" type="feather" color="white" />
         </Button>
 
-        <Text style={styles.dateText}>{range[0]}</Text>
-        <Text style={styles.dateText}>{range[1]}</Text>
+        <Text style={styles.dateText}>
+          {range[0] === "-" ? "-" : range[0].toISOString().split("T")[0]}
+        </Text>
+        <Text style={styles.dateText}>
+          {range[1] === "-" ? "-" : range[1].toISOString().split("T")[0]}
+        </Text>
       </View>
 
       <View style={styles.buttonsContainer}>
