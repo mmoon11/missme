@@ -38,6 +38,7 @@ const HomeScreen = ({ navigation }) => {
       querySnapshot.docs.map((x) => {
         const obj = {
           title: x.get("title"),
+          location: x.get("location"),
           dates: x.get("dates"),
           attending: x.get("attending"),
         };
@@ -207,6 +208,7 @@ const HomeScreen = ({ navigation }) => {
                     attending: trip.attending,
                   })
                 }
+                key={trip.id}
               >
                 <Text style={styles.tripTitle}>{trip.title}</Text>
                 <View style={styles.tripContainerBottom}>
@@ -218,9 +220,10 @@ const HomeScreen = ({ navigation }) => {
                         </Text>
                       </View>
                     )}
-                    {trip.attending.slice(1).map((key, person) => (
+                    {trip.attending.slice(1).map((person) => (
                       <View
                         style={[styles.profileContainer, { marginLeft: -20 }]}
+                        key={person}
                       >
                         <Text style={styles.initials}>{person.initials}</Text>
                       </View>

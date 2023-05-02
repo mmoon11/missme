@@ -4,6 +4,7 @@ import LinearGradient from "react-native-linear-gradient";
 
 const TripScreen = ({ route, navigation }) => {
   const { tripName, location, range, attending } = route.params;
+  console.log(location);
 
   return (
     <View>
@@ -20,7 +21,8 @@ const TripScreen = ({ route, navigation }) => {
           <Text style={styles.information}>TBD</Text>
         ) : (
           <Text style={styles.information}>
-            {range[0].toString()} - {range[1].toString()}
+            {range[0].toDate().toLocaleString()} -{" "}
+            {range[1].toDate().toLocaleString()}
           </Text>
         )}
       </View>
