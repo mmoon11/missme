@@ -114,6 +114,7 @@ const TripScreen = ({ route, navigation: { setParam } }) => {
         markingType={"period"}
         markedDates={markedDates}
         enableSwipeMonths
+        initialDate={getCalendarDate(range[0])}
       />
 
       <View style={styles.infoContainer}>
