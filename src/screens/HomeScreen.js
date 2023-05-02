@@ -1,15 +1,24 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { CheckBox, Icon, Button } from "@rneui/themed";
 import { TextInput } from "react-native";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Drawer from "react-native-drawer";
 import { DatePickerModal } from "react-native-paper-dates";
+import {
+  collection,
+  query,
+  getDocs,
+  onSnapshot,
+  addDoc,
+} from "firebase/firestore";
+import { db } from "../../util/firebase";
 
 const HomeScreen = ({ navigation }) => {
   // useState
   const [checked, setChecked] = useState(false);
   const handleCheck = () => setChecked(!checked);
   const [open, setOpen] = useState(false);
+  const [trips, setTrips] = useState([]);
 
   // handle clicks
   const handleAddClick = () => {
@@ -20,6 +29,26 @@ const HomeScreen = ({ navigation }) => {
     setOpen(false);
   };
 
+  // query trips
+  useEffect(() => {
+    const q = query(collection(db, "trips"));
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const temp = [];
+      querySnapshot.docs.map((x) => {
+        const obj = {
+          title: x.get("title"),
+          dates: x.get("dates"),
+          attending: x.get("attending"),
+        };
+        const newObj = { ...obj, id: x.id };
+        temp.push(newObj);
+      });
+      setTrips(temp);
+    });
+    return unsubscribe;
+  }, []);
+
   // drawer content
   const DrawerContent = () => {
     // useState
@@ -27,6 +56,13 @@ const HomeScreen = ({ navigation }) => {
     const [location, setLocation] = useState("");
     const [range, setRange] = useState(["-", "-"]);
     const [calOpen, setCalOpen] = useState(false);
+    const [disabled, setDisabled] = useState(true);
+
+    useEffect(() => {
+      if (tripName) {
+        setDisabled(false);
+      }
+    }, [tripName]);
 
     // handle clicks
     const onDismiss = useCallback(() => {
@@ -49,6 +85,22 @@ const HomeScreen = ({ navigation }) => {
 
     const openDates = () => {
       setCalOpen(true);
+    };
+
+    // add trip
+    const addTrip = async () => {
+      if (tripName === "") return;
+
+      const trip = {
+        title: tripName,
+        location: location,
+        dates: range,
+        attending: [],
+      };
+
+      const tripsCollectionRef = collection(db, "trips");
+      await addDoc(tripsCollectionRef, trip);
+      setOpen(false);
     };
 
     return (
@@ -108,9 +160,11 @@ const HomeScreen = ({ navigation }) => {
             color="#26a69a"
             radius="xs"
             buttonStyle={styles.addTripButton}
-            onPress={handleAddClick}
+            onPress={addTrip}
+            disabled={disabled}
+            disabledStyle={{ backgroundColor: "lightgray" }}
           >
-            <Text style={styles.whiteText}>Add Trip</Text>
+            <Text style={disabled ? null : styles.whiteText}>Add Trip</Text>
           </Button>
         </View>
       </View>
@@ -131,6 +185,7 @@ const HomeScreen = ({ navigation }) => {
         >
           <View style={styles.headingContainer}>
             <Text style={styles.heading}>Home</Text>
+
             <View style={styles.profileContainer}>
               {/* replace with initials */}
               <Text style={styles.initials}>MM</Text>
@@ -138,31 +193,48 @@ const HomeScreen = ({ navigation }) => {
           </View>
           <View style={styles.whiteContainer}>
             <Text style={styles.subheading}>Trips</Text>
-            {/* generate trips from database */}
-            {/* dummy data */}
-            <TouchableOpacity style={styles.tripContainer} activeOpacity={0.5}>
-              <Text style={styles.tripTitle}>Miss me summer trip 2023</Text>
-              <View style={styles.tripContainerBottom}>
-                <View style={styles.profileContainer}>
-                  {/* replace with initials */}
-                  <Text style={styles.initials}>MM</Text>
+
+            {/* trips from database */}
+            {trips.map((trip) => (
+              <TouchableOpacity
+                style={styles.tripContainer}
+                activeOpacity={0.5}
+              >
+                <Text style={styles.tripTitle}>{trip.title}</Text>
+                <View style={styles.tripContainerBottom}>
+                  <View style={styles.attendingIcons}>
+                    {trip.attending.length > 0 && (
+                      <View style={[styles.profileContainer, { zIndex: 1 }]}>
+                        <Text style={styles.initials}>
+                          {trip.attending[0].initials}
+                        </Text>
+                      </View>
+                    )}
+                    {trip.attending.slice(1).map((key, person) => (
+                      <View
+                        style={[styles.profileContainer, { marginLeft: -20 }]}
+                      >
+                        <Text style={styles.initials}>{person.initials}</Text>
+                      </View>
+                    ))}
+                  </View>
+                  <CheckBox
+                    right
+                    title={"Going?"}
+                    iconRight
+                    containerStyle={styles.checkboxContainer}
+                    textStyle={styles.checkboxText}
+                    onPress={handleCheck}
+                    checked={checked}
+                    size={24}
+                    checkedIcon={
+                      <Icon name="check-circle" type="feather" color="green" />
+                    }
+                    uncheckedIcon={<Icon name="circle" type="feather" />}
+                  />
                 </View>
-                <CheckBox
-                  right
-                  title={"Going?"}
-                  iconRight
-                  containerStyle={styles.checkboxContainer}
-                  textStyle={styles.checkboxText}
-                  onPress={handleCheck}
-                  checked={checked}
-                  size={24}
-                  checkedIcon={
-                    <Icon name="check-circle" type="feather" color="green" />
-                  }
-                  uncheckedIcon={<Icon name="circle" type="feather" />}
-                />
-              </View>
-            </TouchableOpacity>
+              </TouchableOpacity>
+            ))}
 
             <Button
               type="solid"
@@ -200,6 +272,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#00796b",
     justifyContent: "center",
     alignItems: "center",
+    marginRight: 0,
   },
   initials: {
     fontWeight: "bold",
@@ -348,6 +421,10 @@ const styles = StyleSheet.create({
     shadowOffset: { height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
+  },
+  attendingIcons: {
+    display: "flex",
+    flexDirection: "row",
   },
 });
 
