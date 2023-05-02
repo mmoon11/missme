@@ -9,10 +9,12 @@ const TripButton = ({ trip, navigation }) => {
 
   const getDate = (date) => {
     dateObject = date.toDate();
-    month = (dateObject.getMonth() + 1).toString();
-    day = dateObject.getDate().toString();
-    year = dateObject.getFullYear().toString();
-    return month + "/" + day + "/" + year;
+    options = {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    };
+    return dateObject.toLocaleDateString(undefined, options);
   };
 
   return (
