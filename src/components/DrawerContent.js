@@ -3,8 +3,10 @@ import { StyleSheet, Text, View } from "react-native";
 import { TextInput } from "react-native";
 import { DatePickerModal } from "react-native-paper-dates";
 import { Icon, Button } from "@rneui/themed";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../../util/firebase";
 
-const DrawerContent = ({ handleTapClose }) => {
+const DrawerContent = ({ handleTapClose, setOpen }) => {
   // useState
   const [tripName, setTripName] = useState("");
   const [location, setLocation] = useState("");
@@ -13,8 +15,10 @@ const DrawerContent = ({ handleTapClose }) => {
   const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
-    if (tripName) {
+    if (tripName.length > 0) {
       setDisabled(false);
+    } else {
+      setDisabled(true);
     }
   }, [tripName]);
 
@@ -91,6 +95,7 @@ const DrawerContent = ({ handleTapClose }) => {
           buttonStyle={styles.datesButton}
           containerStyle={styles.datesButtonContainer}
           onPress={openDates}
+          raised
         >
           <Icon name="calendar" type="feather" color="white" />
         </Button>
@@ -114,9 +119,11 @@ const DrawerContent = ({ handleTapClose }) => {
           color="#26a69a"
           radius="xs"
           buttonStyle={styles.addTripButton}
+          containerStyle={{ borderRadius: 50 }}
           onPress={addTrip}
           disabled={disabled}
           disabledStyle={{ backgroundColor: "lightgray" }}
+          raised
         >
           <Text style={disabled ? null : styles.whiteText}>Add Trip</Text>
         </Button>
@@ -133,10 +140,6 @@ const styles = StyleSheet.create({
     padding: 30,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    shadowColor: "#171717",
-    shadowOffset: { height: -4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
     height: "100%",
   },
   textInput: {
@@ -161,12 +164,6 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     height: 50,
     width: 50,
-  },
-  datesButtonContainer: {
-    shadowColor: "#171717",
-    shadowOffset: { height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
   },
   dateText: {
     fontSize: 16,
@@ -201,6 +198,9 @@ const styles = StyleSheet.create({
   },
   whiteText: {
     color: "#fff",
+  },
+  datesButtonContainer: {
+    borderRadius: 50,
   },
 });
 

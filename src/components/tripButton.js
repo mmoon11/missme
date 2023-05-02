@@ -17,6 +17,7 @@ const TripButton = ({ trip, navigation }) => {
           location: trip.location,
           range: trip.dates,
           attending: trip.attending,
+          checked: checked,
         })
       }
     >
@@ -64,10 +65,12 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     padding: 20,
     marginTop: 20,
-    shadowColor: "#171717",
-    shadowOffset: { height: 5 },
+    shadowOffset: {
+      height: 3,
+      width: 3,
+    },
+    shadowColor: "black",
     shadowOpacity: 0.2,
-    shadowRadius: 5,
   },
   tripTitle: {
     fontWeight: "bold",
@@ -92,6 +95,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: 0,
+    shadowColor: "black",
+    shadowOffset: {
+      heigth: 10,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
   },
   initials: {
     fontWeight: "bold",

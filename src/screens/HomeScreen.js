@@ -1,14 +1,14 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { CheckBox, Icon, Button } from "@rneui/themed";
-import { useState, useCallback, useEffect } from "react";
-import Drawer from "react-native-drawer";
 import {
-  collection,
-  query,
-  getDocs,
-  onSnapshot,
-  addDoc,
-} from "firebase/firestore";
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import { Icon, Button } from "@rneui/themed";
+import { useState, useEffect } from "react";
+import Drawer from "react-native-drawer";
+import { collection, query, onSnapshot } from "firebase/firestore";
 import { db } from "../../util/firebase";
 import TripButton from "../components/TripButton";
 import DrawerContent from "../components/DrawerContent";
@@ -56,7 +56,9 @@ const HomeScreen = ({ navigation }) => {
           type="overlay"
           tapToClose
           open={open}
-          content={<DrawerContent handleTapClose={handleTapClose} />}
+          content={
+            <DrawerContent handleTapClose={handleTapClose} setOpen={setOpen} />
+          }
           openDrawerOffset={0.05}
           onCloseStart={handleTapClose}
         >
@@ -68,24 +70,25 @@ const HomeScreen = ({ navigation }) => {
               <Text style={styles.initials}>MM</Text>
             </View>
           </View>
-          <View style={styles.whiteContainer}>
+
+          <ScrollView style={styles.whiteContainer}>
             <Text style={styles.subheading}>Trips</Text>
 
             {/* trips from database */}
             {trips.map((trip) => (
               <TripButton trip={trip} navigation={navigation} key={trip.id} />
             ))}
-
-            <Button
-              type="solid"
-              color="#26a69a"
-              buttonStyle={styles.addButton}
-              containerStyle={styles.buttonContainer}
-              onPress={handleAddClick}
-            >
-              <Icon name="plus" type="feather" color="white" />
-            </Button>
-          </View>
+          </ScrollView>
+          <Button
+            type="solid"
+            color="#26a69a"
+            buttonStyle={styles.addButton}
+            containerStyle={styles.buttonContainer}
+            onPress={handleAddClick}
+            raised
+          >
+            <Icon name="plus" type="feather" color="white" />
+          </Button>
         </Drawer>
       </View>
     </>
@@ -129,6 +132,12 @@ const styles = StyleSheet.create({
     marginTop: "8%",
     borderRadius: 20,
     padding: 35,
+    shadowOffset: {
+      height: -3,
+    },
+    shadowColor: "black",
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
   },
   subheading: {
     color: "#979C9E",
@@ -136,18 +145,15 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   addButton: {
-    borderRadius: 50,
     width: 65,
     height: 65,
+    borderRadius: 50,
   },
   buttonContainer: {
     position: "absolute",
-    bottom: 190,
-    right: 35,
-    shadowColor: "#171717",
-    shadowOffset: { height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
+    bottom: 40,
+    right: 30,
+    borderRadius: 50,
   },
   drawerStyles: {
     main: { border: "solid" },
