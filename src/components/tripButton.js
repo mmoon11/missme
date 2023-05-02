@@ -7,6 +7,15 @@ const TripButton = ({ trip, navigation }) => {
 
   const [checked, setChecked] = useState(false);
 
+  const getDate = (date) => {
+    console.log(date);
+    dateObject = date.toDate();
+    month = (dateObject.getMonth() + 1).toString();
+    day = dateObject.getDate().toString();
+    year = dateObject.getFullYear().toString();
+    return month + "/" + day + "/" + year;
+  };
+
   return (
     <TouchableOpacity
       style={styles.tripContainer}
@@ -21,7 +30,10 @@ const TripButton = ({ trip, navigation }) => {
         })
       }
     >
-      <Text style={styles.tripTitle}>{trip.title}</Text>
+      <View style={styles.buttonTop}>
+        <Text style={styles.tripTitle}>{trip.title}</Text>
+        {trip.dates[0].length > 1 && <Text>{getDate(trip.dates[0])}</Text>}
+      </View>
       <Text style={styles.locationText}>{trip.location}</Text>
 
       <View style={styles.tripContainerBottom}>
@@ -120,6 +132,10 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     color: "gray",
     marginTop: 2,
+  },
+  buttonTop: {
+    display: "flex",
+    flexDirection: "row",
   },
 });
 
