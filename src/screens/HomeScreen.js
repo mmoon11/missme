@@ -6,11 +6,27 @@ import { collection, query, onSnapshot } from "firebase/firestore";
 import { db } from "../../util/firebase";
 import TripButton from "../components/TripButton";
 import DrawerContent from "../components/DrawerContent";
+import { auth } from "../../util/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
-const HomeScreen = ({ navigation, route }) => {
+const HomeScreen = ({ navigation }) => {
   // useState
   const [open, setOpen] = useState(false);
   const [trips, setTrips] = useState([]);
+  const [signedIn, setSignedIn] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setSignedIn(true);
+        setUser(user);
+        console.log(user);
+      } else {
+        setSignedIn(false);
+      }
+    });
+  }, []);
 
   // handle clicks
   const handleAddClick = () => {
@@ -59,28 +75,31 @@ const HomeScreen = ({ navigation, route }) => {
           <View style={styles.headingContainer}>
             <Text style={styles.heading}>Home</Text>
 
-            {/* <View style={styles.profileContainer}>
-              <Text style={styles.initials}>MM</Text>
-            </View> */}
-            <Button
-              buttonStyle={{ borderRadius: 50, backgroundColor: "#00796b" }}
-              containerStyle={{ borderRadius: 50 }}
-              raised
-              onPress={() => {
-                navigation.navigate("Login");
-              }}
-            >
-              <Text
-                style={{
-                  padding: 5,
-                  paddingLeft: 10,
-                  paddingRight: 10,
-                  color: "white",
+            {!signedIn ? (
+              <Button
+                buttonStyle={{ borderRadius: 50, backgroundColor: "#00796b" }}
+                containerStyle={{ borderRadius: 50 }}
+                raised
+                onPress={() => {
+                  navigation.navigate("Login");
                 }}
               >
-                Sign in
-              </Text>
-            </Button>
+                <Text
+                  style={{
+                    padding: 5,
+                    paddingLeft: 10,
+                    paddingRight: 10,
+                    color: "white",
+                  }}
+                >
+                  Sign in
+                </Text>
+              </Button>
+            ) : (
+              <View style={styles.profileContainer}>
+                <Text style={styles.initials}>{user.email}</Text>
+              </View>
+            )}
           </View>
 
           <ScrollView style={styles.whiteContainer}>

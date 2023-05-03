@@ -3,7 +3,10 @@ import { useState, useEffect } from "react";
 import { TextInput } from "react-native";
 import { Button } from "@rneui/themed";
 import { auth } from "../../util/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -37,6 +40,13 @@ const LoginScreen = ({ navigation }) => {
       });
   };
 
+  const onLogin = () => {
+    signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
+      const user = userCredential.user;
+      navigation.navigate("Home");
+    });
+  };
+
   return (
     <View style={styles.container}>
       <Text style={{ fontSize: 22, textAlign: "center", marginBottom: 50 }}>
@@ -68,6 +78,7 @@ const LoginScreen = ({ navigation }) => {
         }}
         containerStyle={{ borderRadius: 50, marginTop: 30 }}
         disabled={disabled}
+        onPress={onLogin}
       />
 
       <Button
