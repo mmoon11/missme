@@ -1,11 +1,41 @@
 import { StyleSheet, Text, View, ScrollView } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TextInput } from "react-native";
 import { Button } from "@rneui/themed";
+import { auth } from "../../util/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
-const SignUpScreen = ({ navigation }) => {
-  const [loginEmail, setLoginEmail] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
+const LoginScreen = ({ navigation }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [disabled, setDisabled] = useState(true);
+
+  useEffect(() => {
+    if (email !== "" && password !== "") {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, [email, password]);
+
+  const onSignUp = () => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredentials) => {
+        const user = userCredentials.user;
+        console.log("User account created & signed in!");
+      })
+      .catch((error) => {
+        if (error.code === "auth/email-already-in-use") {
+          console.log("That email address is already in use!");
+        }
+
+        if (error.code === "auth/invalid-email") {
+          console.log("That email address is invalid!");
+        }
+
+        console.error(error);
+      });
+  };
 
   return (
     <View style={styles.container}>
@@ -14,15 +44,16 @@ const SignUpScreen = ({ navigation }) => {
       </Text>
       <TextInput
         placeholder="Email"
-        defaultValue={loginEmail}
-        onChangeText={(email) => setLoginEmail(email)}
+        defaultValue={email}
+        onChangeText={(email) => setEmail(email)}
         style={styles.textInput}
       />
       <TextInput
         placeholder="Password"
-        defaultValue={loginPassword}
-        onChangeText={(password) => setLoginPassword(password)}
+        defaultValue={password}
+        onChangeText={(password) => setPassword(password)}
         style={styles.textInput}
+        secureTextEntry
       />
       <Button
         title="Sign in"
@@ -36,15 +67,32 @@ const SignUpScreen = ({ navigation }) => {
           borderRadius: 50,
         }}
         containerStyle={{ borderRadius: 50, marginTop: 30 }}
+        disabled={disabled}
       />
-      <Text
+
+      <Button
+        title="Sign up"
+        type="solid"
+        color="#26a69a"
+        radius="xs"
+        buttonStyle={{
+          backgroundColor: "white",
+          height: 45,
+          borderRadius: 50,
+        }}
+        containerStyle={{ borderRadius: 50, marginTop: 15 }}
+        disabled={disabled}
+        onPress={onSignUp}
+        titleStyle={{ color: "black" }}
+      />
+      {/* <Text
         style={{ textAlign: "center", marginTop: 15 }}
         onPress={() => {
           navigation.navigate("Signup");
         }}
       >
         Sign up here
-      </Text>
+      </Text> */}
     </View>
   );
 };
@@ -66,4 +114,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignUpScreen;
+export default LoginScreen;

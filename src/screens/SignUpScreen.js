@@ -1,11 +1,41 @@
 import { StyleSheet, Text, View, ScrollView } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TextInput } from "react-native";
 import { Button } from "@rneui/themed";
+import auth from "@react-native-firebase/auth";
 
-const LoginScreen = () => {
+const SignUpScreen = () => {
   const [signupEmail, setSignupEmail] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
+  const [disabled, setDisabled] = useState(true);
+
+  useEffect(() => {
+    if (signupEmail !== "" && signupPassword !== "") {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, [signupEmail, signupPassword]);
+
+  const onSignUp = () => {
+    auth()
+      .createUserWithEmailAndPassword(signupEmail, signupPassword)
+      .then((userCredentials) => {
+        const user = userCredentials.user;
+        console.log("User account created & signed in!");
+      })
+      .catch((error) => {
+        if (error.code === "auth/email-already-in-use") {
+          console.log("That email address is already in use!");
+        }
+
+        if (error.code === "auth/invalid-email") {
+          console.log("That email address is invalid!");
+        }
+
+        console.error(error);
+      });
+  };
 
   return (
     <View style={styles.container}>
@@ -23,6 +53,7 @@ const LoginScreen = () => {
         defaultValue={signupPassword}
         onChangeText={(password) => setSignupPassword(password)}
         style={styles.textInput}
+        secureTextEntry
       />
       <Button
         title="Sign up"
@@ -36,6 +67,8 @@ const LoginScreen = () => {
           borderRadius: 50,
         }}
         containerStyle={{ borderRadius: 50, marginTop: 30 }}
+        disabled={disabled}
+        onPress={onSignUp}
       />
     </View>
   );
@@ -58,4 +91,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default SignUpScreen;
