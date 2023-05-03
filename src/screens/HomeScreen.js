@@ -2,7 +2,14 @@ import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { Icon, Button } from "@rneui/themed";
 import { useState, useEffect } from "react";
 import Drawer from "react-native-drawer";
-import { collection, query, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  query,
+  onSnapshot,
+  addDoc,
+  setDoc,
+  doc,
+} from "firebase/firestore";
 import { db } from "../../util/firebase";
 import TripButton from "../components/TripButton";
 import DrawerContent from "../components/DrawerContent";
@@ -16,12 +23,25 @@ const HomeScreen = ({ navigation }) => {
   const [signedIn, setSignedIn] = useState(false);
   const [user, setUser] = useState(null);
 
+  const addUser = async () => {
+    if (!user) return;
+
+    const userInfo = {
+      name: user.displayName,
+      attending: [],
+      notAttending: [],
+    };
+
+    await setDoc(doc(db, "users", user.uid), userInfo);
+  };
+
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setSignedIn(true);
         console.log(user);
         setUser(user);
+        addUser();
       } else {
         setSignedIn(false);
       }
