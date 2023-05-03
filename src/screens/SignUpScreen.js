@@ -3,29 +3,29 @@ import { useState } from "react";
 import { TextInput } from "react-native";
 import { Button } from "@rneui/themed";
 
-const SignUpScreen = ({ navigation }) => {
-  const [loginEmail, setLoginEmail] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
+const LoginScreen = () => {
+  const [signupEmail, setSignupEmail] = useState("");
+  const [signupPassword, setSignupPassword] = useState("");
 
   return (
     <View style={styles.container}>
       <Text style={{ fontSize: 22, textAlign: "center", marginBottom: 50 }}>
-        Sign in
+        Sign up
       </Text>
       <TextInput
-        placeholder="Email"
-        defaultValue={loginEmail}
-        onChangeText={(email) => setLoginEmail(email)}
+        placeholder="Enter your email"
+        defaultValue={signupEmail}
+        onChangeText={(email) => setSignupEmail(email)}
         style={styles.textInput}
       />
       <TextInput
-        placeholder="Password"
-        defaultValue={loginPassword}
-        onChangeText={(password) => setLoginPassword(password)}
+        placeholder="Enter a password"
+        defaultValue={signupPassword}
+        onChangeText={(password) => setSignupPassword(password)}
         style={styles.textInput}
       />
       <Button
-        title="Sign in"
+        title="Sign up"
         type="solid"
         color="#26a69a"
         radius="xs"
@@ -37,14 +37,6 @@ const SignUpScreen = ({ navigation }) => {
         }}
         containerStyle={{ borderRadius: 50, marginTop: 30 }}
       />
-      <Text
-        style={{ textAlign: "center", marginTop: 15 }}
-        onPress={() => {
-          navigation.navigate("Signup");
-        }}
-      >
-        Sign up here
-      </Text>
     </View>
   );
 };
@@ -66,4 +58,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignUpScreen;
+export default LoginScreen;
