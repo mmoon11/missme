@@ -29,6 +29,7 @@ const TripButton = ({ trip, navigation }) => {
           location: trip.location,
           range: trip.dates,
           attending: trip.attending,
+          tripID: trip.id,
           // checked: checked,
         })
       }

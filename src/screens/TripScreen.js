@@ -1,12 +1,17 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Chip, CheckBox, Icon, ButtonGroup } from "@rneui/themed";
 import { Calendar } from "react-native-calendars";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { auth } from "../../util/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { db } from "../../util/firebase";
 
 const TripScreen = ({ route, navigation }) => {
-  const { tripName, location, range, attending } = route.params;
+  const { tripName, location, range, attending, tripID } = route.params;
   const [markedDates, setMarkedDates] = useState({});
   const [checked, setChecked] = useState(false);
+  const [user, setUser] = useState(null);
   const handleCheck = () => setChecked(!checked);
 
   const [rsvp, setRsvp] = useState(null);
@@ -86,6 +91,36 @@ const TripScreen = ({ route, navigation }) => {
     }
   }, [range]);
 
+  // check if signedin
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+      }
+    });
+  });
+
+  // add to array according to answer
+  const notInitialRender = useRef(false);
+
+  useEffect(() => {
+    if (notInitialRender.current) {
+      const userRef = doc(db, "users", user.uid);
+      if (rsvp === 1) {
+        updateDoc(userRef, {
+          attending: arrayUnion(tripID),
+          notAttending: arrayRemove(tripID),
+        });
+      } else
+        updateDoc(userRef, {
+          notAttending: arrayUnion(tripID),
+          attending: arrayRemove(tripID),
+        });
+    } else {
+      notInitialRender.current = true;
+    }
+  }, [rsvp]);
+
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.headingContainer}>
@@ -151,32 +186,44 @@ const TripScreen = ({ route, navigation }) => {
         checkedIcon={<Icon name="check-circle" type="feather" color="green" />}
         uncheckedIcon={<Icon name="circle" type="feather" />}
       /> */}
-      <View
-        style={{
-          position: "absolute",
-          bottom: 40,
-          right: 20,
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 5,
-        }}
-      >
-        <Text>Going?</Text>
-        <ButtonGroup
-          buttons={["No", "Yes"]}
-          selectedIndex={rsvp}
-          onPress={(value) => {
-            setRsvp(value);
+      {user ? (
+        <View
+          style={{
+            position: "absolute",
+            bottom: 40,
+            right: 20,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 5,
           }}
-          containerStyle={styles.buttonGroupContainer}
-          selectedButtonStyle={
-            rsvp === 0
-              ? { backgroundColor: "red" }
-              : { backgroundColor: "green" }
-          }
-        />
-      </View>
+        >
+          <Text>Going?</Text>
+          <ButtonGroup
+            buttons={["No", "Yes"]}
+            selectedIndex={rsvp}
+            onPress={(value) => {
+              setRsvp(value);
+            }}
+            containerStyle={styles.buttonGroupContainer}
+            selectedButtonStyle={
+              rsvp === 0
+                ? { backgroundColor: "red" }
+                : { backgroundColor: "green" }
+            }
+          />
+        </View>
+      ) : (
+        <View
+          style={{
+            position: "absolute",
+            bottom: 50,
+            right: 50,
+          }}
+        >
+          <Text style={{ fontSize: 16 }}>Sign in to RSVP</Text>
+        </View>
+      )}
     </View>
   );
 };
