@@ -1,11 +1,15 @@
 import { StyleSheet, Text, View } from "react-native";
-import { Chip, CheckBox, Icon } from "@rneui/themed";
+import { Chip, CheckBox, Icon, ButtonGroup } from "@rneui/themed";
 import { Calendar } from "react-native-calendars";
 import { useState, useEffect } from "react";
 
 const TripScreen = ({ route, navigation }) => {
-  const { tripName, location, range, attending, checked } = route.params;
+  const { tripName, location, range, attending } = route.params;
   const [markedDates, setMarkedDates] = useState({});
+  const [checked, setChecked] = useState(false);
+  const handleCheck = () => setChecked(!checked);
+
+  const [rsvp, setRsvp] = useState(null);
 
   const getDate = (date) => {
     dateObject = date.toDate();
@@ -38,7 +42,7 @@ const TripScreen = ({ route, navigation }) => {
     ) {
       start.setDate(start.getDate() + 1);
 
-      betweenDays.push(start);
+      betweenDays.push(start.toISOString().split("T")[0]);
     }
 
     return betweenDays;
@@ -71,7 +75,6 @@ const TripScreen = ({ route, navigation }) => {
       temp[startDate] = startStyle;
 
       betweenDays.map((day) => {
-        day = day.toISOString().split("T")[0];
         temp[day] = middleStyle;
       });
 
@@ -136,18 +139,44 @@ const TripScreen = ({ route, navigation }) => {
         ))}
       </View>
 
-      <CheckBox
+      {/* <CheckBox
         right
         title={"Going?"}
         iconRight
         containerStyle={styles.checkboxContainer}
         textStyle={styles.checkboxText}
-        onPress={() => navigation.setParams({ checked: !checked })}
+        onPress={handleCheck}
         checked={checked}
         size={24}
         checkedIcon={<Icon name="check-circle" type="feather" color="green" />}
         uncheckedIcon={<Icon name="circle" type="feather" />}
-      />
+      /> */}
+      <View
+        style={{
+          position: "absolute",
+          bottom: 40,
+          right: 20,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 5,
+        }}
+      >
+        <Text>Going?</Text>
+        <ButtonGroup
+          buttons={["No", "Yes"]}
+          selectedIndex={rsvp}
+          onPress={(value) => {
+            setRsvp(value);
+          }}
+          containerStyle={styles.buttonGroupContainer}
+          selectedButtonStyle={
+            rsvp === 0
+              ? { backgroundColor: "red" }
+              : { backgroundColor: "green" }
+          }
+        />
+      </View>
     </View>
   );
 };
@@ -156,7 +185,7 @@ const styles = StyleSheet.create({
   headingContainer: {
     display: "flex",
     alignItmes: "center",
-    paddingTop: 55,
+    marginTop: 55,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -210,16 +239,11 @@ const styles = StyleSheet.create({
   nameText: {
     fontSize: 16,
   },
-  checkboxContainer: {
-    backgroundColor: "lightgray",
-    padding: 20,
-    paddingLeft: 30,
-    paddingRight: 30,
-    position: "absolute",
-    bottom: 40,
-    right: 20,
+  buttonGroupContainer: {
     borderRadius: 50,
     zIndex: 2,
+    width: 200,
+    backgroundColor: "transparent",
   },
   checkboxText: {
     fontWeight: "normal",

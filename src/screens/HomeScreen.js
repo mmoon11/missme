@@ -67,6 +67,18 @@ const HomeScreen = ({ navigation, route }) => {
 
           <ScrollView style={styles.whiteContainer}>
             <Text style={styles.subheading}>Trips</Text>
+            <Text
+              style={{
+                color: "#979C9E",
+                fontWeight: "bold",
+                fontSize: 14,
+                fontStyle: "italic",
+                marginTop: 10,
+                textAlign: "right",
+              }}
+            >
+              Click on trip to RSVP
+            </Text>
 
             {/* trips from database */}
             {trips.map((trip) => (
