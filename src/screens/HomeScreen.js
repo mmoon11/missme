@@ -59,10 +59,28 @@ const HomeScreen = ({ navigation, route }) => {
           <View style={styles.headingContainer}>
             <Text style={styles.heading}>Home</Text>
 
-            <View style={styles.profileContainer}>
-              {/* replace with initials */}
+            {/* <View style={styles.profileContainer}>
               <Text style={styles.initials}>MM</Text>
-            </View>
+            </View> */}
+            <Button
+              buttonStyle={{ borderRadius: 50, backgroundColor: "#00796b" }}
+              containerStyle={{ borderRadius: 50 }}
+              raised
+              onPress={() => {
+                navigation.navigate("Login");
+              }}
+            >
+              <Text
+                style={{
+                  padding: 5,
+                  paddingLeft: 10,
+                  paddingRight: 10,
+                  color: "white",
+                }}
+              >
+                Sign in
+              </Text>
+            </Button>
           </View>
 
           <ScrollView style={styles.whiteContainer}>
