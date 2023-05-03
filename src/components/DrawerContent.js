@@ -10,7 +10,7 @@ const DrawerContent = ({ handleTapClose, setOpen }) => {
   // useState
   const [tripName, setTripName] = useState("");
   const [location, setLocation] = useState("");
-  const [range, setRange] = useState([undefined, undefined]);
+  const [range, setRange] = useState([null, null]);
   const [calOpen, setCalOpen] = useState(false);
   const [disabled, setDisabled] = useState(true);
 
@@ -42,7 +42,7 @@ const DrawerContent = ({ handleTapClose, setOpen }) => {
     handleTapClose();
     setTripName("");
     setLocation("");
-    setRange([undefined, undefined]);
+    setRange([null, null]);
   };
 
   // add trip
@@ -101,10 +101,10 @@ const DrawerContent = ({ handleTapClose, setOpen }) => {
         </Button>
 
         <Text style={styles.dateText}>
-          {range[0] === undefined ? "-" : range[0].toDateString()}
+          {range[0] === null ? "-" : range[0].toDateString()}
         </Text>
         <Text style={styles.dateText}>
-          {range[1] === undefined ? "-" : range[1].toDateString()}
+          {range[1] === null ? "-" : range[1].toDateString()}
         </Text>
       </View>
 
