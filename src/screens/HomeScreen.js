@@ -20,8 +20,8 @@ const HomeScreen = ({ navigation }) => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setSignedIn(true);
-        setUser(user);
         console.log(user);
+        setUser(user);
       } else {
         setSignedIn(false);
       }
@@ -96,9 +96,15 @@ const HomeScreen = ({ navigation }) => {
                 </Text>
               </Button>
             ) : (
-              <View style={styles.profileContainer}>
-                <Text style={styles.initials}>{user.email}</Text>
-              </View>
+              <Button
+                onPress={() => {
+                  navigation.navigate("Profile", { user: user });
+                }}
+                buttonStyle={styles.profileContainer}
+                containerStyle={styles.profileContainer}
+              >
+                <Text style={styles.initials}>MM</Text>
+              </Button>
             )}
           </View>
 
@@ -152,8 +158,8 @@ const styles = StyleSheet.create({
     marginTop: 70,
   },
   profileContainer: {
-    width: 35,
-    height: 35,
+    width: 50,
+    height: 50,
     borderRadius: 30,
     backgroundColor: "#00796b",
     justifyContent: "center",
@@ -163,6 +169,7 @@ const styles = StyleSheet.create({
   initials: {
     fontWeight: "bold",
     color: "#fff",
+    fontSize: 14,
   },
   heading: {
     fontSize: 32,
