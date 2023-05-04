@@ -32,7 +32,6 @@ const HomeScreen = ({ navigation }) => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setSignedIn(true);
-        console.log(user);
         setUser(user);
         addUser();
       } else {
@@ -111,7 +110,7 @@ const HomeScreen = ({ navigation }) => {
             ) : (
               <Button
                 onPress={() => {
-                  navigation.navigate("Profile", { user: user });
+                  navigation.navigate("Profile");
                 }}
                 buttonStyle={styles.profileContainer}
                 containerStyle={styles.profileContainer}

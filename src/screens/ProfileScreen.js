@@ -1,20 +1,26 @@
 import { StyleSheet, Text, View, ScrollView } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TextInput } from "react-native";
-import { display } from "@mui/system";
 import { Icon, Button } from "@rneui/themed";
 import { auth } from "../../util/firebase";
 import { updateProfile } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 
-const ProfileScreen = ({ route }) => {
-  const { user } = route.params;
-  console.log(user);
+const ProfileScreen = ({ navigation }) => {
+  const [user, setUser] = useState(null);
 
-  const defaultEmail = user ? user.email : null;
-  const defaultDisplayName = user ? user.displayName : null;
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+        setEmail(user.email);
+        setDisplayName(user.displayName);
+      }
+    });
+  }, []);
 
-  const [email, setEmail] = useState(defaultEmail);
-  const [displayName, setDisplayName] = useState(defaultDisplayName);
+  const [email, setEmail] = useState(null);
+  const [displayName, setDisplayName] = useState(null);
 
   const updateUserInfo = () => {
     updateProfile(user, {
