@@ -17,7 +17,7 @@ const TripButton = ({ trip, navigation }) => {
   };
 
   const numOfPeople = trip.attending.length;
-  const firstPerson = trip.attending.length > 0 ? trip.attending[0].name : null;
+  const firstPerson = trip.attending.length > 0 ? trip.attending[0] : null;
 
   return (
     <TouchableOpacity
@@ -59,7 +59,7 @@ const TripButton = ({ trip, navigation }) => {
             {trip.attending.length > 0 && (
               <View style={[styles.profileContainer, { zIndex: 1 }]}>
                 <Text style={styles.initials}>
-                  {trip.attending[0].initials}
+                  {trip.attending[0].slice(0, 1)}
                 </Text>
               </View>
             )}
@@ -68,7 +68,7 @@ const TripButton = ({ trip, navigation }) => {
                 style={[styles.profileContainer, { marginLeft: -20 }]}
                 key={person}
               >
-                <Text style={styles.initials}>{person.initials}</Text>
+                <Text style={styles.initials}>{person.slice(0, 1)}</Text>
               </View>
             ))}
           </View>

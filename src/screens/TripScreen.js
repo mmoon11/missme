@@ -4,16 +4,27 @@ import { Calendar } from "react-native-calendars";
 import { useState, useEffect, useRef } from "react";
 import { auth } from "../../util/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
+import {
+  arrayRemove,
+  arrayUnion,
+  doc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../../util/firebase";
 
-const TripScreen = ({ route, navigation }) => {
+const TripScreen = ({ route }) => {
   const { tripName, location, range, attending, tripID } = route.params;
   const [markedDates, setMarkedDates] = useState({});
   const [checked, setChecked] = useState(false);
   const [user, setUser] = useState(null);
   const handleCheck = () => setChecked(!checked);
 
+  if (user) {
+    const userRef = doc(db, "users", user.uid);
+    // TODO: set default option to yes or no if in the arrays
+    const defaultRsvp = true;
+  }
   const [rsvp, setRsvp] = useState(null);
 
   const getDate = (date) => {
@@ -98,7 +109,7 @@ const TripScreen = ({ route, navigation }) => {
         setUser(user);
       }
     });
-  });
+  }, []);
 
   // add to array according to answer
   const notInitialRender = useRef(false);
@@ -106,16 +117,24 @@ const TripScreen = ({ route, navigation }) => {
   useEffect(() => {
     if (notInitialRender.current) {
       const userRef = doc(db, "users", user.uid);
+      const tripRef = doc(db, "trips", tripID);
       if (rsvp === 1) {
         updateDoc(userRef, {
           attending: arrayUnion(tripID),
           notAttending: arrayRemove(tripID),
         });
-      } else
+        updateDoc(tripRef, {
+          attending: arrayUnion(user.displayName),
+        });
+      } else {
         updateDoc(userRef, {
           notAttending: arrayUnion(tripID),
           attending: arrayRemove(tripID),
         });
+        updateDoc(tripRef, {
+          attending: arrayRemove(user.displayName),
+        });
+      }
     } else {
       notInitialRender.current = true;
     }
@@ -167,9 +186,9 @@ const TripScreen = ({ route, navigation }) => {
         {attending.map((person) => (
           <View style={styles.person} key={person.name}>
             <View style={styles.profileContainer}>
-              <Text style={styles.initials}>{person.initials}</Text>
+              <Text style={styles.initials}>{person.slice(0, 1)}</Text>
             </View>
-            <Text style={styles.nameText}>{person.name}</Text>
+            <Text style={styles.nameText}>{person}</Text>
           </View>
         ))}
       </View>
